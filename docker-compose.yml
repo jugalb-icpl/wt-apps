@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:4.4.19
+    restart: unless-stopped
+    ports:
+      - 27025:27017
+    networks:
+      - wt-app
+    volumes:
+      - db:/data/db
+    command: mongod --bind_ip_all --port 27017
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  server:
+    depends_on:
+      - mongo
+    build: 
+      context: server/
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    networks:
+      - wt-app
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017/authApp
+
+  client:
+    depends_on:
+      - server
+    build:
+      context: client/
+    restart: unless-stopped
+    environment:  
+      - REACT_APP_API_URL=http://127.0.0.1:8080/api
+    ports: 
+      - 8001:3000
+    networks:
+      - wt-app
+
+volumes:
+  db:
+
+networks:
+  wt-app:
+    driver: bridge
