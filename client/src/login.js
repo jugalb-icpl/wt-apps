@@ -18,7 +18,7 @@ const LoginPage = () => {
       });
 
       // Handle successful login, e.g., store the token in localStorage
-      console.log(response.data);
+      console.log("Response : ",response.data);
     } catch (error) {
       console.error("Error logging in:", error);
     }
