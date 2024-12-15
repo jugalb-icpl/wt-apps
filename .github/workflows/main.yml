@@ -25,6 +25,7 @@ jobs:
     - name: Get the latest tag for server and client images
       id: get_versions
       run: |
+        # Fetch the latest tag or default to v0 if not found
         SERVER_LATEST_TAG=$(docker pull jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }} || echo "v0")
         CLIENT_LATEST_TAG=$(docker pull jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }} || echo "v0")
 
@@ -40,17 +41,20 @@ jobs:
         SERVER_NEW_VERSION=${SERVER_NEW_VERSION:-1}
         CLIENT_NEW_VERSION=${CLIENT_NEW_VERSION:-1}
 
+        # Set the new version numbers as environment variables
         echo "SERVER_NEW_VERSION=${SERVER_NEW_VERSION}" >> $GITHUB_ENV
         echo "CLIENT_NEW_VERSION=${CLIENT_NEW_VERSION}" >> $GITHUB_ENV
 
     - name: Build and push server Docker image
       working-directory: ./server
       run: |
-        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.SERVER_NEW_VERSION }} .
-        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.SERVER_NEW_VERSION }}
+        # Tag the server image with the correct version
+        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }}-${{ env.SERVER_NEW_VERSION }} .
+        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }}-${{ env.SERVER_NEW_VERSION }}
 
     - name: Build and push client Docker image
       working-directory: ./client
       run: |
-        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.CLIENT_NEW_VERSION }} .
-        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.CLIENT_NEW_VERSION }}
+        # Tag the client image with the correct version
+        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }}-${{ env.CLIENT_NEW_VERSION }} .
+        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }}-${{ env.CLIENT_NEW_VERSION }}
