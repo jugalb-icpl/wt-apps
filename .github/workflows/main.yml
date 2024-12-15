@@ -22,16 +22,31 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKERPW }}
       run: docker login -u "${{ env.DOCKER_USERNAME }}" -p ${DOCKER_PASSWORD}
 
+    - name: Get the latest tag for server and client images
+      id: get_versions
+      run: |
+        SERVER_LATEST_TAG=$(docker pull jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }} || echo "v0")
+        CLIENT_LATEST_TAG=$(docker pull jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }} || echo "v0")
+
+        SERVER_VERSION=$(echo $SERVER_LATEST_TAG | grep -oP '\d+' || echo "0")
+        CLIENT_VERSION=$(echo $CLIENT_LATEST_TAG | grep -oP '\d+' || echo "0")
+
+        SERVER_NEW_VERSION=$((SERVER_VERSION + 1))
+        CLIENT_NEW_VERSION=$((CLIENT_VERSION + 1))
+
+        echo "SERVER_NEW_VERSION=${SERVER_NEW_VERSION}" >> $GITHUB_ENV
+        echo "CLIENT_NEW_VERSION=${CLIENT_NEW_VERSION}" >> $GITHUB_ENV
+
     - name: Build and push server Docker image
       working-directory: ./server
       run: |
         docker build -t ${{ env.DOCKER_IMG_SERVER }} .
-        docker tag ${{ env.DOCKER_IMG_SERVER }} jugalb/${{ env.DOCKER_REPO }}:v2
-        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }}
+        docker tag ${{ env.DOCKER_IMG_SERVER }} jugalb/${{ env.DOCKER_REPO }}:${{ env.SERVER_NEW_VERSION }}
+        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.SERVER_NEW_VERSION }}
 
     - name: Build and push client Docker image
       working-directory: ./client
       run: |
         docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }} .
-        docker tag ${{ env.DOCKER_IMG_CLIENT }} jugalb/${{ env.DOCKER_REPO }}:v2
-        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }}
+        docker tag ${{ env.DOCKER_IMG_CLIENT }} jugalb/${{ env.DOCKER_REPO }}:${{ env.CLIENT_NEW_VERSION }}
+        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.CLIENT_NEW_VERSION }}
