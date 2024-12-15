@@ -10,7 +10,7 @@ services:
     environment:
       - WATCHTOWER_HTTP_API_TOKEN=mytoken
       - WATCHTOWER_AUTH_FILE=/config.json
-      - WATCHTOWER_POLL_INTERVAL=30
+      - WATCHTOWER_POLL_INTERVAL=120
       - WATCHTOWER_TRACE=true 
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
@@ -36,7 +36,7 @@ services:
       retries: 5
 
   server:
-    image: jugalb/wt-apps:server-latest  # Use the 'latest' tag
+    image: jugalb/wt-apps-server:latest  # Use the 'latest' tag
     restart: unless-stopped
     environment:
       - PORT=8000
@@ -48,7 +48,7 @@ services:
       - wt-app
 
   client:
-    image: jugalb/wt-apps:client-latest  # Use the 'latest' tag
+    image: jugalb/wt-apps-client:latest  # Use the 'latest' tag
     restart: unless-stopped
     environment:  
       - REACT_APP_API_URL=http://127.0.0.1:8000/api
