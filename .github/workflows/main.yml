@@ -14,55 +14,57 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
     - name: Log in to Docker Hub
       env:
         DOCKER_PASSWORD: ${{ secrets.DOCKERPW }}
-      run: docker login -u "${{ env.DOCKER_USERNAME }}" -p $DOCKER_PASSWORD
-
-    - name: Get the latest tag for server image
-      id: get_server_version
       run: |
+        echo "$DOCKER_PASSWORD" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Determine version numbers
+      id: get_versions
+      run: |
+        # Fetch the latest tags for server and client, or default to "v0" if they don't exist
         SERVER_LATEST_TAG=$(docker pull jugalb/${{ env.DOCKER_SERVER_REPO }}:latest 2>/dev/null || echo "v0")
-        
-        SERVER_VERSION=$(echo $SERVER_LATEST_TAG | grep -oP '\d+' || echo "0")
-        
-        SERVER_NEW_VERSION=$((SERVER_VERSION + 1))
-
-        SERVER_NEW_VERSION=${SERVER_NEW_VERSION:-1}
-
-        echo "SERVER_NEW_VERSION=v${SERVER_NEW_VERSION}" >> $GITHUB_ENV
-
-    - name: Get the latest tag for client image
-      id: get_client_version
-      run: |
         CLIENT_LATEST_TAG=$(docker pull jugalb/${{ env.DOCKER_CLIENT_REPO }}:latest 2>/dev/null || echo "v0")
-        
-        CLIENT_VERSION=$(echo $CLIENT_LATEST_TAG | grep -oP '\d+' || echo "0")
-        
+
+        # Extract numeric parts of the version or default to 0
+        SERVER_VERSION=$(echo $SERVER_LATEST_TAG | grep -oP '\d+$' || echo "0")
+        CLIENT_VERSION=$(echo $CLIENT_LATEST_TAG | grep -oP '\d+$' || echo "0")
+
+        # Increment the versions
+        SERVER_NEW_VERSION=$((SERVER_VERSION + 1))
         CLIENT_NEW_VERSION=$((CLIENT_VERSION + 1))
 
-        CLIENT_NEW_VERSION=${CLIENT_NEW_VERSION:-1}
-
+        # Export the new version numbers
+        echo "SERVER_NEW_VERSION=v${SERVER_NEW_VERSION}" >> $GITHUB_ENV
         echo "CLIENT_NEW_VERSION=v${CLIENT_NEW_VERSION}" >> $GITHUB_ENV
+
+    - name: Log version information
+      run: |
+        echo "New server version: $SERVER_NEW_VERSION"
+        echo "New client version: $CLIENT_NEW_VERSION"
 
     - name: Build and push server Docker image
       working-directory: ./server
       run: |
+        # Build images with both versioned and latest tags
         docker build -t jugalb/${{ env.DOCKER_SERVER_REPO }}:${{ env.SERVER_NEW_VERSION }} .
-        
-        docker push jugalb/${{ env.DOCKER_SERVER_REPO }}:${{ env.SERVER_NEW_VERSION }}
+        docker build -t jugalb/${{ env.DOCKER_SERVER_REPO }}:latest .
 
-        docker tag jugalb/${{ env.DOCKER_SERVER_REPO }}:${{ env.SERVER_NEW_VERSION }} jugalb/${{ env.DOCKER_SERVER_REPO }}:latest
+        # Push both images
+        docker push jugalb/${{ env.DOCKER_SERVER_REPO }}:${{ env.SERVER_NEW_VERSION }}
         docker push jugalb/${{ env.DOCKER_SERVER_REPO }}:latest
 
     - name: Build and push client Docker image
       working-directory: ./client
       run: |
+        # Build images with both versioned and latest tags
         docker build -t jugalb/${{ env.DOCKER_CLIENT_REPO }}:${{ env.CLIENT_NEW_VERSION }} .
-        
-        docker push jugalb/${{ env.DOCKER_CLIENT_REPO }}:${{ env.CLIENT_NEW_VERSION }}
+        docker build -t jugalb/${{ env.DOCKER_CLIENT_REPO }}:latest .
 
-        docker tag jugalb/${{ env.DOCKER_CLIENT_REPO }}:${{ env.CLIENT_NEW_VERSION }} jugalb/${{ env.DOCKER_CLIENT_REPO }}:latest
+        # Push both images
+        docker push jugalb/${{ env.DOCKER_CLIENT_REPO }}:${{ env.CLIENT_NEW_VERSION }}
         docker push jugalb/${{ env.DOCKER_CLIENT_REPO }}:latest
