@@ -24,11 +24,11 @@ jobs:
     - name: Build and push server Docker image
       working-directory: ./server
       run: |
-        docker build -t ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1 -f server/Dockerfile .
+        docker build -t ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1 .
         docker push ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1
 
     - name: Build and push client Docker image
       working-directory: ./client
       run: |
-        docker build -t ${{ env.DOCKER_IMAGE_NAME_CLIENT }}:v1 -f client/Dockerfile .
+        docker build -t ${{ env.DOCKER_IMAGE_NAME_CLIENT }}:v1 .
         docker push ${{ env.DOCKER_IMAGE_NAME_CLIENT }}:v1
