@@ -19,7 +19,7 @@ jobs:
     - name: Log in to Docker Hub
       env:
         DOCKER_PASSWORD: ${{ secrets.DOCKERPW }}
-      run: echo ${DOCKER_PASSWORD} | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
+      run: docker login -u "${{ env.DOCKER_USERNAME }}" -p ${DOCKER_PASSWORD}
 
     - name: Build and push server Docker image
       working-directory: ./server
