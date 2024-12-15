@@ -1,0 +1,32 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+env:
+  DOCKER_USERNAME: jugalb
+  DOCKER_IMAGE_NAME_CLIENT: wt-apps/client
+  DOCKER_IMAGE_NAME_SERVER: wt-apps/server
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      env:
+        DOCKER_PASSWORD: ${{ secrets.DOCEKR_PASSWORD }}
+      run: echo "${DOCKER_PASSWORD}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Build and push client Docker image
+      run: |
+        docker build -t ${{ env.DOCKER_IMAGE_NAME_CLIENT }}:v1 -f client/Dockerfile .
+        docker push ${{ env.DOCKER_IMAGE_NAME_CLIENT }}:v1
+
+    - name: Build and push server Docker image
+      run: |
+        docker build -t ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1 -f server/Dockerfile .
+        docker push ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1
