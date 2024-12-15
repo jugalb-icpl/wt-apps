@@ -6,8 +6,9 @@ on:
 
 env:
   DOCKER_USERNAME: jugalb
-  DOCKER_IMAGE_NAME_CLIENT: wt-apps/client
-  DOCKER_IMAGE_NAME_SERVER: wt-apps/server
+  DOCKER_REPO: wt-apps
+  DOCKER_IMG_CLIENT: client
+  DOCKER_IMG_SERVER: server
 
 jobs:
   build-and-push:
@@ -24,11 +25,11 @@ jobs:
     - name: Build and push server Docker image
       working-directory: ./server
       run: |
-        docker build -t ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1 .
-        docker push ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1
+        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }}
+        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }}
 
     - name: Build and push client Docker image
       working-directory: ./client
       run: |
-        docker build -t ${{ env.DOCKER_IMAGE_NAME_CLIENT }}:v1 .
-        docker push ${{ env.DOCKER_IMAGE_NAME_CLIENT }}:v1
+        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }}
+        docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }}
