@@ -21,13 +21,12 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKERPW }}
       run: echo ${DOCKER_PASSWORD} | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
 
+    - name: Build and push server Docker image
+      run: |
+        docker build -t ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1 -f server/Dockerfile .
+        docker push ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1
 
     - name: Build and push client Docker image
       run: |
         docker build -t ${{ env.DOCKER_IMAGE_NAME_CLIENT }}:v1 -f client/Dockerfile .
         docker push ${{ env.DOCKER_IMAGE_NAME_CLIENT }}:v1
-
-    - name: Build and push server Docker image
-      run: |
-        docker build -t ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1 -f server/Dockerfile .
-        docker push ${{ env.DOCKER_IMAGE_NAME_SERVER }}:v1
