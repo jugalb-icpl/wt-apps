@@ -25,7 +25,7 @@ jobs:
     - name: Build and push server Docker image
       working-directory: ./server
       run: |
-        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }} .
+        docker build -t ${{ env.DOCKER_IMG_SERVER }} .
         docker tag ${{ env.DOCKER_IMG_SERVER }} jugalb/${{ env.DOCKER_REPO }}:v2
         docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }}
 
