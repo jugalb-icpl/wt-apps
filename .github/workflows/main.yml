@@ -26,19 +26,23 @@ jobs:
     - name: Determine version numbers
       id: get_versions
       run: |
-        # Fetch the latest tags for server and client, or default to "v0" if they don't exist
-        SERVER_LATEST_TAG=$(docker pull jugalb/${{ env.DOCKER_SERVER_REPO }}:latest 2>/dev/null || echo "v0")
-        CLIENT_LATEST_TAG=$(docker pull jugalb/${{ env.DOCKER_CLIENT_REPO }}:latest 2>/dev/null || echo "v0")
+        # Fetch the list of tags for the server and client
+        SERVER_TAGS=$(curl -s "https://hub.docker.com/v2/repositories/jugalb/${{ env.DOCKER_SERVER_REPO }}/tags?page_size=100" | jq -r '.results[].name')
+        CLIENT_TAGS=$(curl -s "https://hub.docker.com/v2/repositories/jugalb/${{ env.DOCKER_CLIENT_REPO }}/tags?page_size=100" | jq -r '.results[].name')
+
+        # Get the highest version number from existing tags (or default to 0 if no tags exist)
+        SERVER_LATEST_TAG=$(echo "$SERVER_TAGS" | grep -Eo 'v[0-9]+' | sort -V | tail -n 1 || echo "v0")
+        CLIENT_LATEST_TAG=$(echo "$CLIENT_TAGS" | grep -Eo 'v[0-9]+' | sort -V | tail -n 1 || echo "v0")
 
         # Extract numeric parts of the version or default to 0
-        SERVER_VERSION=$(echo $SERVER_LATEST_TAG | grep -oP '\d+$' || echo "0")
-        CLIENT_VERSION=$(echo $CLIENT_LATEST_TAG | grep -oP '\d+$' || echo "0")
+        SERVER_VERSION=$(echo $SERVER_LATEST_TAG | grep -oP '\d+' || echo "0")
+        CLIENT_VERSION=$(echo $CLIENT_LATEST_TAG | grep -oP '\d+' || echo "0")
 
         # Increment the versions
         SERVER_NEW_VERSION=$((SERVER_VERSION + 1))
         CLIENT_NEW_VERSION=$((CLIENT_VERSION + 1))
 
-        # Export the new version numbers
+        # Set new version numbers as environment variables
         echo "SERVER_NEW_VERSION=v${SERVER_NEW_VERSION}" >> $GITHUB_ENV
         echo "CLIENT_NEW_VERSION=v${CLIENT_NEW_VERSION}" >> $GITHUB_ENV
 
