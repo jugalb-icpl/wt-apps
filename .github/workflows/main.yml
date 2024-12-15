@@ -18,8 +18,9 @@ jobs:
 
     - name: Log in to Docker Hub
       env:
-        DOCKER_PASSWORD: ${{ secrets.DOCEKR_PASSWORD }}
-      run: echo "${DOCKER_PASSWORD}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
+        DOCKER_PASSWORD: ${{ secrets.DOCEKRPW }}
+      run: echo ${DOCKER_PASSWORD} | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
+
 
     - name: Build and push client Docker image
       run: |
