@@ -26,10 +26,12 @@ jobs:
       working-directory: ./server
       run: |
         docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }} .
+        docker tag ${{ env.DOCKER_IMG_SERVER }} jugalb/${{ env.DOCKER_REPO }}:v2
         docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }}
 
     - name: Build and push client Docker image
       working-directory: ./client
       run: |
         docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }} .
+        docker tag ${{ env.DOCKER_IMG_CLIENT }} jugalb/${{ env.DOCKER_REPO }}:v2
         docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }}
