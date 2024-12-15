@@ -25,11 +25,11 @@ jobs:
     - name: Build and push server Docker image
       working-directory: ./server
       run: |
-        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }}
+        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }} .
         docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_SERVER }}
 
     - name: Build and push client Docker image
       working-directory: ./client
       run: |
-        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }}
+        docker build -t jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }} .
         docker push jugalb/${{ env.DOCKER_REPO }}:${{ env.DOCKER_IMG_CLIENT }}
