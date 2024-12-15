@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
+const axios = require('axios');
 
 // Initialize app and middleware
 const app = express();
@@ -76,8 +77,44 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+app.post('/api/force-update', async (req, res) => {
+  try {
+    console.log('Watchtower triggered');
+    
+    // Extract token from the Authorization header
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+      return res.status(400).json({ message: 'Authorization token is required' });
+    }
+
+    // Ensure token is in "Bearer <token>" format
+    const token = authHeader.startsWith('Bearer ')
+      ? authHeader.split(' ')[1]
+      : authHeader;
+
+    const response = await axios.post(`${process.env.WATCHTOWER_URL}/v1/containers/update`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    // Respond with success message
+    res.status(200).json({ 
+      message: 'Watchtower update triggered successfully!',
+      details: response.data
+    });
+  } catch (err) {
+    // Handle error
+    console.error('Error in triggering Watchtower:', err.message);
+    res.status(500).json({ 
+      message: 'Error in triggering Watchtower', 
+      error: err.message 
+    });
+  }
+});
+
+
 // Start the server
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}/api`);
 });
