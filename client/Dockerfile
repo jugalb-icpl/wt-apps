@@ -11,7 +11,13 @@ COPY package.json package-lock.json .
 RUN npm install
 
 # Copy the entire React project into the container
-COPY . .
+COPY . .        
+
+# ENV REACT_APP_API_URL=http://localhost:8000/api
+
+# Set the API_URL environment variable
+ARG API_URL
+ENV REACT_APP_API_URL=$API_URL
 
 # Build the React app for production
 RUN npm run build
