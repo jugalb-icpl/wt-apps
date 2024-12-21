@@ -74,7 +74,7 @@ const LoginPage = () => {
       setMessageType("error");
       return;
     }
-
+    setMessage("Checking for updates.....");
     try {
       // Send force-update request with token in the Authorization header
       const response = await axios.post(
@@ -132,7 +132,7 @@ const LoginPage = () => {
             Don't have an account? <Link to="/register">Register</Link>
           </p>
           <button className="btn btn-primary w-100" type="submit">
-            Login
+            Sign In
           </button>
         </form>
 

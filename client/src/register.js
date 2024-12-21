@@ -32,7 +32,7 @@ const RegisterPage = () => {
   return (
     <div className="login-page">
       <div className="login-container">
-        <h1 className="my-4">Register</h1>
+        <h1 className="my-4">Sign up</h1>
 
         {/* Display message */}
         {message && (
