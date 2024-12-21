@@ -6,10 +6,19 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const axios = require('axios');
+const cors = require('cors');
 
 // Initialize app and middleware
 const app = express();
 app.use(bodyParser.json());
+
+const corsOptions = {
+  origin: 'http://localhost:3000', // Allow requests from this origin
+  methods: ['GET', 'POST'], // Allow only GET and POST methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+};
+
+app.use(cors(corsOptions));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URL, {
@@ -77,11 +86,33 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+app.post('/api/force-update', async (req, res) => {
+  const token = process.env.WATCHTOWER_API_TOKEN; // You would typically get this from the request or environment
+
+  try {
+    const response = await axios.post(
+      process.env.WATCHTOWER_API_URL,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    res.status(200).json({ message: 'Update successful', data: response.data });
+  } catch (error) {
+    console.error('Error making request:', error);
+    res.status(500).json({ message: 'Error updating container', error: error.message });
+  }
+});
+
+
 // Start the server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}/api`);
-  console.log(`watchtower api: ${process.env.WATCHTOWER_API_URL}`);
+  console.log(`watchtower api: ${process.env.WATCHTOWER_API_URL || "not exists"}`);
   console.log(`Job Done: Final True`);
-  console.log(`watchtower token: ${process.env.WATCHTOWER_API_TOKEN}`);
+  console.log(`watchtower token: ${process.env.WATCHTOWER_API_TOKEN || "not exists"}`);
 });

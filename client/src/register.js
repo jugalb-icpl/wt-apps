@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const { REACT_APP_API_URL } = process.env;
 const RegisterPage = () => {
@@ -29,30 +30,59 @@ const RegisterPage = () => {
   };
 
   return (
-    <div>
-      <h1>Register</h1>
-      {message && <p style={{ color: messageType === "success" ? "green" : "red" }}>{message}</p>} {/* Display the message */}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <br />
-        <button type="submit">Register</button>
-      </form>
+    <div className="login-page">
+      <div className="login-container">
+        <h1 className="my-4">Register</h1>
+
+        {/* Display message */}
+        {message && (
+          <p
+            className={`mt-3 text-center ${
+              messageType === "success" ? "text-success" : "text-danger"
+            }`}
+          >
+            {message}
+          </p>
+        )}
+
+        {/* Register form */}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="username" className="form-label">
+              Username:
+            </label>
+            <input
+              id="username"
+              type="text"
+              className="form-control"
+              value={username}
+              placeholder="Enter your Username"
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              Password:
+            </label>
+            <input
+              id="password"
+              type="password"
+              className="form-control"
+              value={password}
+              placeholder="Enter your Password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <p>
+            Already have an account? <Link to="/">Login</Link>
+          </p>
+          <button className="btn btn-primary w-100" type="submit">
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

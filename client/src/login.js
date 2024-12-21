@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from 'react-router-dom';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -26,6 +27,7 @@ const LoginPage = () => {
         setMessageType("success");
         // Handle token storage, etc.
         console.log("Response: ", response.data);
+        localStorage.setItem('authToken', response.data.token);
       }
     } catch (error) {
       setMessage(
@@ -37,36 +39,55 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <br />
-        <button type="submit">Login</button>
-      </form>
+    <div className="login-page">
+      <div className="login-container">
+        <h1>Login</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="username" className="form-label">
+              Username:
+            </label>
+            <input
+              id="username"
+              className="form-control"
+              type="text"
+              value={username}
+              placeholder="Enter your Username"
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              Password:
+            </label>
+            <input
+              id="password"
+              className="form-control"
+              type="password"
+              value={password}
+              placeholder="Enter your Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <p>
+            Don't have an account? <Link to="/register">Register</Link>
+          </p>
+          <button className="btn btn-primary w-100" type="submit">
+            Login
+          </button>
+        </form>
 
-      {/* Display message */}
-      {message && (
-        <p style={{ color: messageType === "success" ? "green" : "red" }}>
-          {message}
-        </p>
-      )}
+        {/* Display message */}
+        {message && (
+          <p
+            className={`mt-3 text-center ${
+              messageType === "success" ? "text-success" : "text-danger"
+            }`}
+          >
+            {message}
+          </p>
+        )}
+      </div>
     </div>
   );
 };
