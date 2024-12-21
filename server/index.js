@@ -118,5 +118,6 @@ const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}/api`);
   console.log(`watchtower api: ${process.env.WATCHTOWER_API_URL}`);
+  console.log(`Job Done: True`);
   console.log(`watchtower token: ${process.env.WATCHTOWER_API_TOKEN}`);
 });
