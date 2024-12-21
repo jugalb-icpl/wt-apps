@@ -52,7 +52,7 @@
   background: #e9d1ff;
   /* background: #ffffff; */
   padding: 30px;
-  border-radius: 8px;
+  border-radius: 45px;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
@@ -90,4 +90,8 @@ button.btn-primary {
 
 .text-danger {
   color: red;
+}
+
+.btn{
+  border-radius: 100px;
 }
