@@ -100,7 +100,7 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <div className="login-container">
-        <h1>Login</h1>
+        <h1>Sign In</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="username" className="form-label">
@@ -132,7 +132,7 @@ const LoginPage = () => {
             Don't have an account? <Link to="/register">Register</Link>
           </p>
           <button className="btn btn-primary w-100" type="submit">
-            Sign In
+            Login
           </button>
         </form>
 
