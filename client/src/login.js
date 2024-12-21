@@ -133,7 +133,7 @@ const LoginPage = () => {
         {/* Conditionally render the "Update running container" button */}
         {isLoggedIn && (
           <button
-            className="btn btn-primary w-100 mt-3"
+            className="btn btn-success w-100 mt-3"
             type="button"
             onClick={handleForceUpdate} // Trigger the force update action
           >
