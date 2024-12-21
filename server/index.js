@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 // Secret key for JWT
-const JWT_SECRET = 'your_jwt_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Register route
 app.post('/api/register', async (req, res) => {
@@ -61,49 +61,79 @@ app.post('/api/register', async (req, res) => {
 });
 
 // Login route
+// Login route
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
 
+  // Validate request body
   if (!username || !password) {
     return res.status(400).json({ message: 'Username and password are required' });
   }
 
   try {
+    // Find the user by username
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // Compare entered password with stored password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
-    const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+    // Generate a JWT token
+    const token = jwt.sign(
+      { id: user._id, username: user.username }, // Payload (user data)
+      JWT_SECRET, // Secret key
+      { expiresIn: '1h' } // Token expiry
+    );
+
+    // Respond with success message and the generated token
     res.status(200).json({ message: 'Login successful', token });
   } catch (err) {
     res.status(500).json({ message: 'Error logging in', error: err.message });
   }
 });
 
+
 app.post('/api/force-update', async (req, res) => {
-  const token = process.env.WATCHTOWER_API_TOKEN; // You would typically get this from the request or environment
+  const token = req.headers['authorization']?.split(' ')[1] || process.env.WATCHTOWER_API_TOKEN; // Get token from request header or use the environment variable token
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided, access denied.' });
+  }
 
   try {
-    const response = await axios.post(
-      process.env.WATCHTOWER_API_URL,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    // Validate the token (optional - depending on your setup)
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: 'Invalid or expired token.' });
       }
-    );
 
-    res.status(200).json({ message: 'Update successful', data: response.data });
+      // Proceed with making the request to Watchtower API
+      axios.post(
+        process.env.WATCHTOWER_API_URL,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.WATCHTOWER_API_TOKEN}`, // Use token from environment or decoded one
+          },
+        }
+      )
+        .then(response => {
+          res.status(200).json({ message: 'Update successful', data: response.data });
+        })
+        .catch(error => {
+          console.error('Error making request:', error);
+          res.status(500).json({ message: 'Error updating container', error: error.message });
+        });
+    });
+
   } catch (error) {
-    console.error('Error making request:', error);
-    res.status(500).json({ message: 'Error updating container', error: error.message });
+    console.error('Error in force-update request:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 });
 

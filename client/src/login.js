@@ -9,7 +9,9 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(""); // State for success/error message
   const [messageType, setMessageType] = useState(""); // State to handle message type ('success' or 'error')
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
 
+  // Handle login form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(""); // Clear the message before making the request
@@ -25,6 +27,7 @@ const LoginPage = () => {
       if (response.status === 200) {
         setMessage("Login successful!");
         setMessageType("success");
+        setIsLoggedIn(true); // Set logged in status to true
         // Handle token storage, etc.
         console.log("Response: ", response.data);
         localStorage.setItem('authToken', response.data.token);
@@ -35,6 +38,38 @@ const LoginPage = () => {
       );
       setMessageType("error");
       console.error("Error logging in:", error);
+    }
+  };
+
+  // Handle "Update running container" button click
+  const handleForceUpdate = async () => {
+    const token = localStorage.getItem('authToken'); // Get token from localStorage
+
+    if (!token) {
+      setMessage("No valid token found. Please log in first.");
+      setMessageType("error");
+      return;
+    }
+
+    try {
+      // Send force-update request with token in the Authorization header
+      const response = await axios.post(
+        `${apiUrl}/force-update`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send token in Authorization header
+          },
+        }
+      );
+
+      setMessage("Update successful!");
+      setMessageType("success");
+      console.log("Force update response:", response.data);
+    } catch (error) {
+      setMessage("Error updating container. Please try again.");
+      setMessageType("error");
+      console.error("Error making force-update request:", error);
     }
   };
 
@@ -76,6 +111,17 @@ const LoginPage = () => {
             Login
           </button>
         </form>
+
+        {/* Conditionally render the "Update running container" button */}
+        {isLoggedIn && (
+          <button
+            className="btn btn-primary w-100 mt-3"
+            type="button"
+            onClick={handleForceUpdate} // Trigger the force update action
+          >
+            Update running container
+          </button>
+        )}
 
         {/* Display message */}
         {message && (

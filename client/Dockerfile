@@ -1,6 +1,12 @@
 # Use official Node.js image as the base image
 FROM node:18-alpine
 
+# Install curl
+RUN apk add --no-cache curl
+
+# Verify installation
+RUN curl --version
+
 # Set the working directory inside the container
 WORKDIR /app
 
