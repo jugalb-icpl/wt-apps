@@ -15,31 +15,54 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(""); // Clear the message before making the request
-
+  
+    // Client-side validation
+    if (!username || !password) {
+      setMessage("Username and password are required.");
+      setMessageType("error");
+      return;
+    }
+  
     try {
       console.log("API URL:", apiUrl);
       const response = await axios.post(`${apiUrl}/login`, {
         username,
         password,
       });
-
-      // Assuming the API returns a success status or token
       if (response.status === 200) {
         setMessage("Login successful!");
         setMessageType("success");
         setIsLoggedIn(true); // Set logged in status to true
-        // Handle token storage, etc.
         console.log("Response: ", response.data);
-        localStorage.setItem('authToken', response.data.token);
+        localStorage.setItem('authToken', response.data.token); // Store token
+      } else {
+        throw new Error("Unexpected response status."); // Handle unexpected success status
       }
     } catch (error) {
-      setMessage(
-        error.response?.data?.message || "Error logging in. Please try again."
-      );
-      setMessageType("error");
+      // Check for response errors
+      if (error.response) {
+        const status = error.response.status;
+        const errorMessage =
+          error.response.data?.message ||
+          (status === 401
+            ? "Invalid credentials. Please check your username and password."
+            : "An error occurred. Please try again.");
+  
+        setMessage(errorMessage);
+        setMessageType("error");
+      } else if (error.request) {
+        // Network error or no response
+        setMessage("No response from the server. Please check your internet connection.");
+        setMessageType("error");
+      } else {
+        // Any other error
+        setMessage("An unexpected error occurred. Please try again.");
+        setMessageType("error");
+      }
       console.error("Error logging in:", error);
     }
   };
+  
 
   // Handle "Update running container" button click
   const handleForceUpdate = async () => {
