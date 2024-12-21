@@ -93,5 +93,5 @@ button.btn-primary {
 }
 
 .btn{
-  border-radius: 100px;
+  border-radius: 100px !important;
 }
