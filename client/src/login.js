@@ -100,12 +100,9 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <div className="login-container">
-        <h1>Login here</h1>
+        <h1 className="my-4">Login here</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              Username:
-            </label>
             <input
               id="username"
               className="form-control"
@@ -116,9 +113,6 @@ const LoginPage = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password:
-            </label>
             <input
               id="password"
               className="form-control"

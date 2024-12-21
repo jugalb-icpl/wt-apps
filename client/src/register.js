@@ -48,9 +48,6 @@ const RegisterPage = () => {
         {/* Register form */}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              Username:
-            </label>
             <input
               id="username"
               type="text"
@@ -62,9 +59,6 @@ const RegisterPage = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password:
-            </label>
             <input
               id="password"
               type="password"
