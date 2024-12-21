@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom';
 
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api";
+console.log("Environment Variable - API URL:", process.env.REACT_APP_API_URL);
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
