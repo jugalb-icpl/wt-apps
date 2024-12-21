@@ -131,7 +131,7 @@ const LoginPage = () => {
         </form>
 
         {/* Conditionally render the "Update running container" button */}
-        {isLoggedIn && (
+        {localStorage.getItem('authToken') && (
           <button
             className="btn btn-success w-100 mt-3"
             type="button"
