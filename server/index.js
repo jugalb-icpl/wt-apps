@@ -38,6 +38,29 @@ const User = mongoose.model('User', userSchema);
 // Secret key for JWT
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Welcome route
+app.get('/', (req, res) => {
+  res.send(`
+    <html>
+      <head>
+        <title>Welcome</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Welcome to the Server</h1>
+        <p>The API server is running successfully!</p>
+        <p>Use the <a href="/api">API endpoints</a> to interact with the application.</p>
+      </body>
+    </html>
+  `);
+});
+
 // Register route
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;

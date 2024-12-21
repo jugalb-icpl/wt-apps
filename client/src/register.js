@@ -78,7 +78,7 @@ const RegisterPage = () => {
           <p>
             Already have an account? <Link to="/">Login</Link>
           </p>
-          <button className="btn btn-primary w-100" type="submit">
+          <button className="btn btn-dark w-100" type="submit">
             Register
           </button>
         </form>
