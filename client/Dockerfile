@@ -22,7 +22,8 @@ COPY . .
 # ENV REACT_APP_API_URL=http://localhost:8000/api
 
 # Set the API_URL environment variable
-ARG API_URL
+ARG API_URL=http://127.0.0.1:8000/api
+
 ENV REACT_APP_API_URL=$API_URL
 
 # Build the React app for production
