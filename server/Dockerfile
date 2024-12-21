@@ -1,6 +1,13 @@
 # Base image
 FROM node:18-alpine
 # Set working directory
+
+# Install curl
+RUN apk add --no-cache curl
+
+# Verify installation
+RUN curl --version
+
 WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json
