@@ -53,12 +53,17 @@ services:
   client:
     image: jugalb/wt-apps-client:latest
     restart: unless-stopped
-    ports: 
+    ports:
       - 3000:3000
     networks:
       - wt-app
+    volumes:
+      - ./entrypoint.sh:/app/entrypoint.sh
+    entrypoint: ["sh", "-c", "ls -l /app && npm start"]
+    # && /app/entrypoint.sh http://localhost:9000 
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
+
 
 volumes:
   db:
