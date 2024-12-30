@@ -57,10 +57,8 @@ services:
       - 3000:3000
     networks:
       - wt-app
-    # volumes:
-    #   - ./entrypoint.sh:/app/entrypoint.sh
-    entrypoint: ["sh", "-c", "cp /app/entrypoint.sh /app/entrypoint2.sh && dos2unix entrypoint2.sh && sh /app/entrypoint2.sh https://asm.infopercept.co.in/api"]
-    command: ["sh", "-c", "serve -s build -l 3000"]
+    entrypoint: ["sh", "-c", "cp /app/entrypoint.sh /app/entrypoint2.sh && dos2unix entrypoint2.sh && sh /app/entrypoint2.sh https://api.server.co.in/api"]
+    command: ["sh", "-c", "serve -s build -l"]
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 

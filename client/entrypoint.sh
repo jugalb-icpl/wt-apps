@@ -20,7 +20,7 @@ if [ -d "$DIRECTORY" ]; then
     # Loop through all main*.js files in the directory
     for file in "$DIRECTORY"/main*.js; do
         if [ -f "$file" ]; then
-            # Replace http://localhost:8000 with the new API URL in each file
+            # Replace http://127.0.0.1:8000/api with the new API URL in each file
             sed -i "s|http://127.0.0.1:8000/api|$NEW_API_URL|g" "$file"
             echo "Updated: $file"
         fi
