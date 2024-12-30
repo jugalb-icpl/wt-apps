@@ -4,6 +4,8 @@ FROM node:18-alpine
 # Install curl
 RUN apk add --no-cache curl
 
+RUN apk add --no-cache dos2unix
+
 # Verify installation
 RUN curl --version
 
