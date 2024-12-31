@@ -30,7 +30,7 @@ RUN apt-get install -y \
     bsdmainutils \
     uuid-runtime \
     snapd \
-    masscan \
+    # masscan \
     && ln -sf python3 /usr/bin/python
 
 
