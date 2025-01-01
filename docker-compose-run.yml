@@ -5,7 +5,7 @@ services:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - C:/Users/jugalb/.docker/config.json:/config.json
+      - /config.json:/config.json
     command: --debug --http-api-update
     environment:
       - WATCHTOWER_HTTP_API_TOKEN=mytoken

@@ -1,0 +1,18 @@
+{
+	"auths": {
+		"https://index.docker.io/v1/": {"auth": "anVnYWxiOmRja3JfcGF0X21mV25Pd0REeDFWN2J4VUF5RkJCRjBTVnlpRQ=="}
+	},
+	"credsStore": "desktop",
+	"currentContext": "desktop-linux",
+	"plugins": {
+		"debug": {
+			"hooks": "exec"
+		},
+		"scout": {
+			"hooks": "pull,buildx build"
+		}
+	},
+	"features": {
+		"hooks": "true"
+	}
+}
